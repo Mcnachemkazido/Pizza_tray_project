@@ -4,6 +4,9 @@ import json
 from schemes import Item
 from mongo import mongo_coll
 from producer import producer ,delivery_report
+from conn_redis import conn_redis
+
+
 
 
 route = APIRouter()
@@ -26,4 +29,23 @@ def create_upload_files(upload_file: UploadFile = File(...)):
         print(e)
         raise HTTPException(status_code=400,detail=e)
 
+
+
+@route.get("/order/{order_id}")
+def get_order_by_id(order_id):
+    try:
+        if conn_redis.get(order_id) is not None:
+            result = json.loads(conn_redis.get(order_id))
+            source = "redis_cache"
+            ttl = conn_redis.ttl(order_id)
+        else:
+            result = mongo_coll.find({"order_id": order_id},{"_id":0}).to_list()
+            conn_redis.setex(order_id,3600,json.dumps(result))
+            source = "mongodb"
+            ttl = conn_redis.ttl(order_id)
+        return {"source":source,"ttl":ttl,"result":result}
+
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=400,detail=e)
 

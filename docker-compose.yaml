@@ -15,6 +15,13 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
+    healthcheck:
+      test: [ "CMD-SHELL", "kafka-cluster cluster-id --bootstrap-server localhost:9092 || exit 1" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
     environment:
       KAFKA_KRAFT_MODE: 'true'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
@@ -31,9 +38,23 @@ services:
     volumes:
       - kafka_data:/var/lib/kafka/data
 
+
+  cache:
+    image: redis
+    restart: always
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - cache:/data
+
+
   app:
     build: ./app
     container_name: app
+    depends_on:
+      kafka:
+        condition: service_healthy
     ports:
       - "8000:8000"
     environment:
@@ -42,9 +63,15 @@ services:
       PIZZA_MONGO_HOST: mongo
       PIZZA_MONGO_PORT: 27017
       PIZZA_HOST_PORT_KAFKA: kafka:29092
+      PIZZA_REDIS_HOST: cache
+      PIZZA_REDIS_PORT: 6379
 
   kitchen_worker:
     build: ./kitchen_worker
+    depends_on:
+      kafka:
+        condition: service_healthy
+
     container_name: kitchen_worker
     environment:
       PIZZA_MONGO_USER: root
@@ -56,6 +83,10 @@ services:
 
   text_worker:
     build: ./text_worker
+    depends_on:
+      kafka:
+        condition: service_healthy
+
     container_name: text_worker
     environment:
       PIZZA_MONGO_USER: root
@@ -69,5 +100,7 @@ services:
 
 volumes:
   kafka_data:
+  cache:
+
 
 
