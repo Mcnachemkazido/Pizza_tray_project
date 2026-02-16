@@ -43,6 +43,15 @@ services:
       PIZZA_MONGO_PORT: 27017
       PIZZA_HOST_PORT_KAFKA: kafka:29092
 
+  kitchen_worker:
+    build: ./kitchen_worker
+    container_name: kitchen_worker
+    environment:
+      PIZZA_MONGO_USER: root
+      PIZZA_MONGO_PASS: asdf
+      PIZZA_MONGO_HOST: mongo
+      PIZZA_MONGO_PORT: 27017
+      PIZZA_HOST_PORT_KAFKA: kafka:29092
 
 
 
