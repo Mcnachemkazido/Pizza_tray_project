@@ -83,6 +83,20 @@ services:
       PIZZA_REDIS_HOST: cache
       PIZZA_REDIS_PORT: 6379
 
+  preprocessor:
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+
+    build: ./preprocessor
+    container_name: preprocessor
+    environment:
+      PIZZA_HOST_PORT_KAFKA: kafka:29092
+      PYTHONUNBUFFERED: 1
+
+
 #
 #  kitchen_worker:
 #    build: ./kitchen_worker
