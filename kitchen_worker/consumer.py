@@ -4,6 +4,7 @@ import json
 from time import sleep
 from confluent_kafka import Consumer
 from mongo import mongo_coll
+from conn_redis import conn_redis
 load_dotenv()
 
 
@@ -30,8 +31,10 @@ try:
         query_filter = {'unique_id':pizza['unique_id']}
         update_operation = {'$set': {'status':'DELIVERED'}}
         mongo_coll.update_one(query_filter,update_operation)
-        print(f"🤩🤩🤩 I updated the Status field in the object: {pizza['unique_id']}")
-        sleep(2)
+        print(f"🤩🤩🤩 I updated the Status field in the object: {pizza['order_id']}")
+        conn_redis.delete(pizza['order_id'])
+        print('😎😎😎 I deleted the information from redis to refresh the information.')
+        sleep(15)
 except KeyboardInterrupt:
     print("good by 👋👋👋")
 

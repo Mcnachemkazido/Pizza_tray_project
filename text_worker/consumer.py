@@ -35,7 +35,8 @@ try:
         update_operation = {'$set': {"cleaned_protocol":data_clearing['cleaned_protocol'],
                                      "allergies_flagged":data_clearing['allergies_flagged']}}
         mongo_coll.update_one(query_filter, update_operation)
-        print(f"😃😃😃😃😃I updated two additional fields in mongodb in user\n{pizza['unique_id']}")
+        print(f"😃😃😃😃😃I updated two additional fields in mongodb in user\n{pizza['order_id']}")
+
 
 except KeyboardInterrupt:
     print("good by 👋👋👋")

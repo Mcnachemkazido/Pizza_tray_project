@@ -40,6 +40,8 @@ def get_order_by_id(order_id):
             ttl = conn_redis.ttl(order_id)
         else:
             result = mongo_coll.find({"order_id": order_id},{"_id":0}).to_list()
+            if not result:
+                return {False:"😡😡😡😡 No information, incorrect number entered"}
             conn_redis.setex(order_id,3600,json.dumps(result))
             source = "mongodb"
             ttl = conn_redis.ttl(order_id)
