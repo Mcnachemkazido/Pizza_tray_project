@@ -83,6 +83,7 @@ services:
       PIZZA_REDIS_HOST: cache
       PIZZA_REDIS_PORT: 6379
 
+
   preprocessor:
     depends_on:
       kafka:

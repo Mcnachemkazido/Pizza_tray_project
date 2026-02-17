@@ -20,6 +20,7 @@ try:
         pizza_prep = pulling_out_pizza_prep(pizza['pizza_type'])
         clean_pizza_prep = clearing_the_data(pizza_prep)
         clean_special_instructions = clearing_the_data(pizza['special_instructions'])
+        print(f"😇😇I got a message from topic orders-pizza and clean this message\nid: {pizza['order_id']}")
 
         msg_send = {"order_id": pizza['order_id'], "pizza_type": pizza['pizza_type'],
                     "clean_special_instructions": clean_special_instructions,
