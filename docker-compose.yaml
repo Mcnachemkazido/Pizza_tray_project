@@ -98,47 +98,27 @@ services:
       PYTHONUNBUFFERED: 1
 
 
-#
-#  kitchen_worker:
-#    build: ./kitchen_worker
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#      mongo:
-#        condition: service_healthy
-#      cache:
-#        condition: service_healthy
-#
-#    container_name: kitchen_worker
-#    environment:
-#      PIZZA_MONGO_USER: root
-#      PIZZA_MONGO_PASS: asdf
-#      PIZZA_MONGO_HOST: mongo
-#      PIZZA_MONGO_PORT: 27017
-#      PIZZA_HOST_PORT_KAFKA: kafka:29092
-#      PIZZA_REDIS_HOST: cache
-#      PIZZA_REDIS_PORT: 6379
-#      PYTHONUNBUFFERED: 1
-#
-#  text_worker:
-#    build: ./text_worker
-#    depends_on:
-#      kafka:
-#        condition: service_healthy
-#      mongo:
-#        condition: service_healthy
-#      cache:
-#        condition: service_healthy
-#
-#    container_name: text_worker
-#    environment:
-#      PIZZA_MONGO_USER: root
-#      PIZZA_MONGO_PASS: asdf
-#      PIZZA_MONGO_HOST: mongo
-#      PIZZA_MONGO_PORT: 27017
-#      PIZZA_HOST_PORT_KAFKA: kafka:29092
-#      PYTHONUNBUFFERED: 1
-#
+  enricher:
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+
+    build: ./enricher
+    container_name: enricher
+    environment:
+      PIZZA_MONGO_USER: root
+      PIZZA_MONGO_PASS: asdf
+      PIZZA_MONGO_HOST: mongo
+      PIZZA_MONGO_PORT: 27017
+      PIZZA_REDIS_HOST: cache
+      PIZZA_REDIS_PORT: 6379
+      PIZZA_HOST_PORT_KAFKA: kafka:29092
+      PYTHONUNBUFFERED: 1
+
 
 
 volumes:
